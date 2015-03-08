@@ -1,6 +1,6 @@
 # Markdownplus
 
-TODO: Write a gem description
+Coming soon. This is a prerelease gem.
 
 ## Installation
 
@@ -16,14 +16,14 @@ Or install it yourself as:
 
     $ gem install markdownplus
 
-## Usage
+# Syntax
 
-TODO: Write usage instructions here
+## Include external files
 
-## Contributing
+Use a fenced code block:
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+```markdown
+  ```download|csv
+  https://gist.githubusercontent.com/cpetersen/b5a473ddf0b796cd9502/raw/e140bdc32ff2f6a600e357c2575220c0312a88ee/fake.csv
+  ```
+```
