@@ -118,7 +118,7 @@ describe Markdownplus::Parser do
       expect(parser.blocks.count).to eq(10)
     end
     context "the second block" do
-      let(:block) { parser.blocks[9] }
+      let(:block) { parser.blocks[1] }
 
       it "should include the proper number of lines" do
         expect(block.lines.count).to eq(21)
