@@ -24,8 +24,8 @@ describe Markdownplus::Parser do
         expect(parser.code_blocks.count).to eq(5)
       end
 
-      it "should have the correct number of download blocks" do
-        expect(parser.downloadable_blocks.count).to eq(2)
+      it "should have the correct number of include blocks" do
+        expect(parser.includable_blocks.count).to eq(2)
       end
 
       it "should have the correct number of execute blocks" do
@@ -68,11 +68,11 @@ describe Markdownplus::Parser do
         end
 
         it "should have the proper directives" do
-          expect(block.directives).to eq(["download"])
+          expect(block.directives).to eq(["include"])
         end
 
-        it "should be an download block" do
-          expect(block).to be_downloadable
+        it "should be an include block" do
+          expect(block).to be_includable
         end
       end
 
@@ -83,11 +83,11 @@ describe Markdownplus::Parser do
         end
 
         it "should have the proper directives" do
-          expect(block.directives).to eq(["download", "json"])
+          expect(block.directives).to eq(["include", "json"])
         end
 
-        it "should be an download block" do
-          expect(block).to be_downloadable
+        it "should be an include block" do
+          expect(block).to be_includable
         end
       end
 
@@ -108,10 +108,10 @@ describe Markdownplus::Parser do
     end
   end
 
-  context "download directives" do
+  context "include directives" do
     let(:parser) { 
-      parser = Markdownplus::Parser.parse(File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "download.md"))) 
-      parser.download
+      parser = Markdownplus::Parser.parse(File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "include.md"))) 
+      parser.include
       parser
     }
     it "should have the right number of blocks" do
@@ -120,7 +120,7 @@ describe Markdownplus::Parser do
     context "the second block" do
       let(:block) { parser.blocks[9] }
 
-      it "should download the proper number of lines" do
+      it "should include the proper number of lines" do
         expect(block.lines.count).to eq(21)
       end
     end

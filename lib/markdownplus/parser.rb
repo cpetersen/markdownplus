@@ -26,8 +26,8 @@ module Markdownplus
       blocks.select { |b| b.class == CodeBlock }
     end
 
-    def downloadable_blocks
-      code_blocks.select(&:downloadable?)
+    def includable_blocks
+      code_blocks.select(&:includable?)
     end
 
     def executable_blocks
@@ -73,9 +73,9 @@ module Markdownplus
       self.blocks << self.current_block if self.current_block      
     end
 
-    def download
-      downloadable_blocks.each do |block|
-        block.download(self.warnings, self.errors)
+    def include
+      includable_blocks.each do |block|
+        block.include(self.warnings, self.errors)
       end
     end
   end
@@ -107,16 +107,16 @@ module Markdownplus
       @directives = value.split("|").collect{|v| v.strip} if value
     end
 
-    def downloadable?
-      first_directive == "download"
+    def includable?
+      first_directive == "include"
     end
 
     def executable?
       first_directive == "execute"
     end
 
-    def download(warnings=[], errors=[])
-      if downloadable?
+    def include(warnings=[], errors=[])
+      if includable?
         if lines.count == 0
           warnings << "No url given"
         else

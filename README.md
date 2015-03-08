@@ -23,7 +23,7 @@ Or install it yourself as:
 Use a fenced code block:
 
 ```markdown
-  ```download|csv
+  ```include|csv
   https://gist.githubusercontent.com/cpetersen/b5a473ddf0b796cd9502/raw/e140bdc32ff2f6a600e357c2575220c0312a88ee/fake.csv
   ```
 ```

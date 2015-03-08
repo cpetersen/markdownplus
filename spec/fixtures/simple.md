@@ -8,12 +8,12 @@ This is a a code block
 This is a ruby code block
 ```
 
-```download
-This is a download block
+```include
+This is a include block
 ```
 
-```download|json
-This is a download block with a filter
+```include|json
+This is a include block with a filter
 ```
 
 ```execute|julia
