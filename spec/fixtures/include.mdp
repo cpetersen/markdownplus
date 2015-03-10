@@ -23,3 +23,11 @@ warning
 ```include|formatted_json
 https://gist.githubusercontent.com/cpetersen/c6571117df132443ac81/raw/e5ac97e8e0665a0e4014ebc85ecef214763a7729/fake.json
 ```
+
+```include|formatted_json
+https://gist.githubusercontent.com/cpetersen/4ac0ab5fb4d1fda22322/raw/3856ed58d5cdfd07800067fc9fb8fcbcfc631d65/bad_json.json
+```
+
+```include
+this should just be an error
+```

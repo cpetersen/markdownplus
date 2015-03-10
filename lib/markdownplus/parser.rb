@@ -1,4 +1,8 @@
+require 'csv'
+require 'json'
 require 'open-uri'
+require 'pygments'
+require 'redcarpet'
 
 module Markdownplus
   class Parser
@@ -34,16 +38,28 @@ module Markdownplus
       code_blocks.select(&:executable?)
     end
 
+    def markdown
+      blocks.collect { |b| b.markdown }.join
+    end
+
+    def html
+      markdown_renderer.render(markdown)
+    end
+
+    def markdown_renderer
+      Redcarpet::Markdown.new(Bootstrap2Renderer, fenced_code_blocks: true)
+    end
+
     def lines
       @lines ||= source.split("\n")
     end
 
     def errors
-      @errors ||= []
+      blocks.collect { |b| b.errors }.flatten
     end
 
     def warnings
-      @warnings ||= []
+      blocks.collect { |b| b.warnings }.flatten
     end
 
     def each_line(&block)
@@ -75,7 +91,7 @@ module Markdownplus
 
     def include
       includable_blocks.each do |block|
-        block.include(self.warnings, self.errors)
+        block.include
       end
     end
   end
@@ -95,9 +111,20 @@ module Markdownplus
     def append(line)
       self.source += "#{line}\n"
     end
+
+    def errors
+      @errors ||= []
+    end
+
+    def warnings
+      @warnings ||= []
+    end
   end
 
   class TextBlock < Block
+    def markdown
+      self.source
+    end
   end
 
   class CodeBlock < Block
@@ -105,6 +132,15 @@ module Markdownplus
 
     def initialize(value=nil)
       @directives = value.split("|").collect{|v| v.strip} if value
+    end
+
+    def markdown
+      s = source
+      if s.end_with?("\n")
+        result = "```#{directives.join("|")}\n#{source}```\n"
+      else
+        result = "```#{directives.join("|")}\n#{source}\n```\n"
+      end
     end
 
     def includable?
@@ -115,18 +151,19 @@ module Markdownplus
       first_directive == "execute"
     end
 
-    def include(warnings=[], errors=[])
+    def include
       if includable?
         if lines.count == 0
-          warnings << "No url given"
+          self.warnings << "No url given"
         else
-          warnings << "More than one line given" if lines.count > 1
+          self.warnings << "More than one line given" if lines.count > 1
+          begin
+            self.source = open(lines.first).read
+          rescue => e
+            self.errors << "Error opening [#{lines.first}] [#{e.message}]"
+          end
         end
-        begin
-          self.source = open(lines.first).read
-        rescue => e
-          errors << "Error opening [#{lines.first}] [#{e.message}]"
-        end
+        directives.shift
       end
     end
 
@@ -177,4 +214,34 @@ module Markdownplus
   #     @params = opts[:params]
   #   end
   # end
+
+  class Bootstrap2Renderer < Redcarpet::Render::HTML
+    # alias_method :existing_block_code, :block_code
+    def block_code(code, language)
+      if language == "csv"
+        result = "<table class='table table-striped'>"
+        row_num = 0
+        CSV.parse(code) do |row|
+          if row_num == 0
+            result += "<thead><tr>#{row.collect { |c| "<th>#{c}</th>"}.join}</tr></thead>\n<tbody>\n"
+          else
+            result += "<tr>#{row.collect { |c| "<td>#{c}</td>"}.join}</tr>\n"
+          end
+          row_num += 1
+        end
+        result += "</tbody></table>"
+      elsif language == "formatted_json"
+        begin
+          obj = JSON.parse(code)
+          result = Pygments.highlight(JSON.pretty_generate(obj), lexer: "json")
+        rescue => e
+          result = Pygments.highlight(code, lexer: "json")
+        end
+      else
+        result = Pygments.highlight(code, lexer: language)
+      end
+      result
+    end
+  end
 end
+
