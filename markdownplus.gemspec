@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Markdownplus::VERSION
   spec.authors       = ["Christopher Petersen"]
   spec.email         = ["chris@petersen.io"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Pre processors that allows the inclusion of external files and post processors for csn and json data.}
+  spec.summary       = %q{Pre and post processors for markdown}
   spec.homepage      = ""
   spec.license       = "MIT"
 
