@@ -47,7 +47,7 @@ module Markdownplus
     end
 
     def markdown_renderer
-      Redcarpet::Markdown.new(Bootstrap2Renderer, fenced_code_blocks: true)
+      Redcarpet::Markdown.new(BootstrapRenderer, fenced_code_blocks: true)
     end
 
     def lines
@@ -170,52 +170,9 @@ module Markdownplus
     def first_directive
       directives.first if directives
     end
-
-    # def method
-    #   matcher = directive.match(/(.*?)\((.*)\)/)
-    #   if matcher
-    #     method = matcher[1].strip
-    #     params = matcher[2].split(",").collect { |p| p.strip }
-    #   end
-    # end
   end
 
-  # class Value
-  #   def self.parse(string)
-  #     items = string.split(",").collect do |item|
-  #       matcher = item.match(/(.*?)\((.*)\)/)
-  #       if matcher
-  #         name = matcher[1].strip
-  #         params = parse(matcher[2])
-  #         Method.new(name: name, params: params)
-  #       else
-  #         Param.new(item.strip)
-  #       end
-  #     end
-  #   end
-  # end
-
-  # class Param < Value
-  #   def initialize(v)
-  #     @value = value
-  #   end
-
-  #   def value
-  #     @value
-  #   end
-  # end
-
-  # class Method < Value
-  #   attr_reader :name
-  #   attr_reader :params
-
-  #   def initialize(opts={})
-  #     @name = opts[:name]
-  #     @params = opts[:params]
-  #   end
-  # end
-
-  class Bootstrap2Renderer < Redcarpet::Render::HTML
+  class BootstrapRenderer < Redcarpet::Render::HTML
     # alias_method :existing_block_code, :block_code
     def block_code(code, language)
       if language == "csv"
