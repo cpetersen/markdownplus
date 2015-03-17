@@ -22,6 +22,23 @@ module Markdownplus
       output
     end
   end
-
   HandlerRegistry.register("include", IncludeHandler)
+
+  class CsvHandler < Handler
+    def execute(input, parameters, warnings, errors)
+      output = "<table class='table table-striped'>"
+      row_num = 0
+      CSV.parse(input) do |row|
+        if row_num == 0
+          output += "<thead><tr>#{row.collect { |c| "<th>#{c}</th>"}.join}</tr></thead>\n<tbody>\n"
+        else
+          output += "<tr>#{row.collect { |c| "<td>#{c}</td>"}.join}</tr>\n"
+        end
+        row_num += 1
+      end
+      output += "</tbody></table>"
+      output
+    end
+  end
+  HandlerRegistry.register("csv", CsvHandler)
 end

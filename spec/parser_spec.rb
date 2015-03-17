@@ -127,8 +127,8 @@ describe Markdownplus::Parser do
       expect(parser.warnings.count).to eq(2)
     end
 
-    it "should have 1 error" do
-      expect(parser.errors.count).to eq(6)
+    it "should have 4 errors" do
+      expect(parser.errors.count).to eq(4)
     end
 
     context "the second block" do
