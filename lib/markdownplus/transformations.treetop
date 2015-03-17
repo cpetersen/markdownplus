@@ -1,0 +1,33 @@
+grammar Transformation
+  rule transformations
+    ( method / "" ) (',' method)*  <Markdownplus::Literals::TransformationLiteral>
+  end
+
+  rule expression
+    ( method / single_quote_string / double_quote_string / token / "" ) (',' expression)*  <Markdownplus::Literals::ExpressionLiteral>
+  end
+
+  rule method
+    token parameters <Markdownplus::Literals::MethodLiteral>
+  end
+
+  rule parameters
+    "(" expression ")" <Markdownplus::Literals::ParensLiteral>
+  end
+
+  rule single_quote_string
+     space? "'" [a-zA-Z0-9 \t]+ "'" space? <Markdownplus::Literals::StringLiteral>
+  end
+
+  rule double_quote_string
+     space? '"' [a-zA-Z0-9 \t]+ '"' space? <Markdownplus::Literals::StringLiteral>
+  end
+
+  rule token
+     space? [a-zA-Z0-9]+ space? <Markdownplus::Literals::TokenLiteral>
+  end
+
+  rule space
+    [\s]+
+  end
+end

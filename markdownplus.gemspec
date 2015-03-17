@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "redcarpet"
   spec.add_dependency "pygments.rb"
+  spec.add_dependency "treetop"
 end
