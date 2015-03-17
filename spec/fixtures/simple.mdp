@@ -8,14 +8,10 @@ This is a a code block
 This is a ruby code block
 ```
 
-```include
+```include()
 This is a include block
 ```
 
-```include|json
+```include(),json()
 This is a include block with a filter
-```
-
-```execute|julia
-This is an execute block with a language
 ```

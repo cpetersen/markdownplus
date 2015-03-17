@@ -6,7 +6,7 @@ require 'redcarpet'
 
 module Markdownplus
   class Parser
-    attr_reader :source
+    attr_reader :input
     attr_accessor :current_block
 
     def self.parse(value)
@@ -16,7 +16,7 @@ module Markdownplus
     end
 
     def initialize(value=nil)
-      @source = value
+      @input = value
     end
 
     def blocks
@@ -28,10 +28,6 @@ module Markdownplus
 
     def code_blocks
       blocks.select { |b| b.class == CodeBlock }
-    end
-
-    def includable_blocks
-      code_blocks.select(&:includable?)
     end
 
     def executable_blocks
@@ -51,7 +47,7 @@ module Markdownplus
     end
 
     def lines
-      @lines ||= source.split("\n")
+      @lines ||= input.split("\n")
     end
 
     def errors
@@ -74,7 +70,7 @@ module Markdownplus
       each_line do |line|
         matcher = line.match(/\s*`{3,}\s*(\S*)\s*/)
         if matcher
-          if self.current_block && self.current_block.class == CodeBlock
+          if self.current_block && self.current_block.is_a?(CodeBlock)
             self.blocks << self.current_block
             self.current_block = nil
           else
@@ -89,27 +85,27 @@ module Markdownplus
       self.blocks << self.current_block if self.current_block      
     end
 
-    def include
-      includable_blocks.each do |block|
-        block.include
+    def execute
+      self.executable_blocks.each do |block|
+        block.execute
       end
     end
   end
 
   class Block
-    def source
-      @source ||= ""
+    def input
+      @input ||= ""
     end
-    def source=(value)
-      @source = value
+    def input=(value)
+      @input = value
     end
 
     def lines
-      self.source.split("\n")
+      self.input.split("\n")
     end
 
     def append(line)
-      self.source += "#{line}\n"
+      self.input += "#{line}\n"
     end
 
     def errors
@@ -123,81 +119,60 @@ module Markdownplus
 
   class TextBlock < Block
     def markdown
-      self.source
+      self.input
     end
   end
 
   class CodeBlock < Block
-    attr_reader :directives
+    attr_reader :directive, :program
+    attr_accessor :output
 
     def initialize(value=nil)
-      @directives = value.split("|").collect{|v| v.strip} if value
-    end
+      @directive = value
 
-    def markdown
-      s = source
-      if s.end_with?("\n")
-        result = "```#{directives.join("|")}\n#{source}```\n"
-      else
-        result = "```#{directives.join("|")}\n#{source}\n```\n"
+      if @directive.match(/\(/)
+        begin
+          @program ||= Markdownplus::DirectiveParser.parse(@directive)
+        rescue => e
+          errors << e.message
+        end
       end
     end
 
-    def includable?
-      first_directive == "include"
+    def functions
+      program.functions if program!=nil
     end
 
     def executable?
-      first_directive == "execute"
+      (functions!=nil && functions.size>0)
     end
 
-    def include
-      if includable?
-        if lines.count == 0
-          self.warnings << "No url given"
-        else
-          self.warnings << "More than one line given" if lines.count > 1
-          begin
-            self.source = open(lines.first).read
-          rescue => e
-            self.errors << "Error opening [#{lines.first}] [#{e.message}]"
-          end
-        end
-        directives.shift
-      end
-    end
-
-    def first_directive
-      directives.first if directives
-    end
-  end
-
-  class BootstrapRenderer < Redcarpet::Render::HTML
-    # alias_method :existing_block_code, :block_code
-    def block_code(code, language)
-      if language == "csv"
-        result = "<table class='table table-striped'>"
-        row_num = 0
-        CSV.parse(code) do |row|
-          if row_num == 0
-            result += "<thead><tr>#{row.collect { |c| "<th>#{c}</th>"}.join}</tr></thead>\n<tbody>\n"
+    def execute
+      self.output = self.input
+      if functions
+        self.functions.each do |function|
+          handler = HandlerRegistry.handler_instance(function.function_name)
+          if handler
+            self.output = handler.execute(output, function.function_parameters, warnings, errors)
           else
-            result += "<tr>#{row.collect { |c| "<td>#{c}</td>"}.join}</tr>\n"
+            self.errors << "No handler defined for [#{function.function_name}]"
           end
-          row_num += 1
         end
-        result += "</tbody></table>"
-      elsif language == "formatted_json"
-        begin
-          obj = JSON.parse(code)
-          result = Pygments.highlight(JSON.pretty_generate(obj), lexer: "json")
-        rescue => e
-          result = Pygments.highlight(code, lexer: "json")
-        end
-      else
-        result = Pygments.highlight(code, lexer: language)
       end
-      result
+      self.output
+    end
+
+    def markdown
+      s = input
+      if s.end_with?("\n")
+        result = "```#{directive}\n#{input}```\n"
+      else
+        result = "```#{directive}\n#{input}\n```\n"
+      end
+    end
+
+    def output_lines
+      self.output.split("\n") if self.output
     end
   end
 end

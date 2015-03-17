@@ -13,23 +13,19 @@ describe Markdownplus::Parser do
       let(:parser) { Markdownplus::Parser.parse(file) }
       
       it "should have the correct number of lines" do
-        expect(parser.lines.count).to eq(21)
+        expect(parser.lines.count).to eq(17)
       end
 
       it "should have the correct number of blocks" do
-        expect(parser.blocks.count).to eq(10)
+        expect(parser.blocks.count).to eq(8)
       end
 
       it "should have the correct number of code blocks" do
-        expect(parser.code_blocks.count).to eq(5)
+        expect(parser.code_blocks.count).to eq(4)
       end
 
-      it "should have the correct number of include blocks" do
-        expect(parser.includable_blocks.count).to eq(2)
-      end
-
-      it "should have the correct number of execute blocks" do
-        expect(parser.executable_blocks.count).to eq(1)
+      it "should have the correct number of executable blocks" do
+        expect(parser.executable_blocks.count).to eq(2)
       end
 
       context "the markdown method" do
@@ -54,7 +50,7 @@ describe Markdownplus::Parser do
         end
 
         it "should have no directives" do
-          expect(block.directives).to eq([])
+          expect(block.directive).to eq("")
         end
       end
 
@@ -65,7 +61,7 @@ describe Markdownplus::Parser do
         end
 
         it "should have the proper directives" do
-          expect(block.directives).to eq(["ruby"])
+          expect(block.directive).to eq("ruby")
         end
       end
 
@@ -76,11 +72,11 @@ describe Markdownplus::Parser do
         end
 
         it "should have the proper directives" do
-          expect(block.directives).to eq(["include"])
+          expect(block.directive).to eq("include()")
         end
 
-        it "should be an include block" do
-          expect(block).to be_includable
+        it "should be an executable block" do
+          expect(block).to be_executable
         end
       end
 
@@ -90,36 +86,37 @@ describe Markdownplus::Parser do
           expect(block.class).to eq(Markdownplus::CodeBlock)
         end
 
-        it "should have the proper directives" do
-          expect(block.directives).to eq(["include", "json"])
-        end
-
-        it "should be an include block" do
-          expect(block).to be_includable
-        end
-      end
-
-      context "the tenth block" do
-        let(:block) { parser.blocks[9] }
-        it "should be a code block" do
-          expect(block.class).to eq(Markdownplus::CodeBlock)
-        end
-
-        it "should have the proper directives" do
-          expect(block.directives).to eq(["execute", "julia"])
-        end
-
-        it "should be an execute block" do
+        it "should be an executable block" do
           expect(block).to be_executable
+        end
+
+        it "should have 2 functions" do
+          expect(block.functions.size).to eq(2)
+        end
+
+        context "the first function" do
+          let(:function) { block.functions[0] }
+
+          it "should have the proper name" do
+            expect(function.function_name).to eq("include")
+          end
+        end
+
+        context "the second function" do
+          let(:function) { block.functions[1] }
+
+          it "should have the proper name" do
+            expect(function.function_name).to eq("json")
+          end
         end
       end
     end
   end
 
-  context "include directives" do
+  context "execute directives" do
     let(:parser) { 
       parser = Markdownplus::Parser.parse(File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "include.mdp")))
-      parser.include
+      parser.execute
       parser
     }
     it "should have the right number of blocks" do
@@ -131,26 +128,26 @@ describe Markdownplus::Parser do
     end
 
     it "should have 1 error" do
-      expect(parser.errors.count).to eq(1)
+      expect(parser.errors.count).to eq(6)
     end
 
     context "the second block" do
       let(:block) { parser.blocks[1] }
 
-      it "should include the proper number of lines" do
-        expect(block.lines.count).to eq(21)
+      it "should include the proper number of output lines" do
+        expect(block.output_lines.count).to eq(21)
       end
     end
 
     context "the sixth block" do
       let(:block) { parser.blocks[5] }
 
-      it "should have a warning" do
-        expect(block.warnings.count).to eq(1)
+      it "should have an error" do
+        expect(block.errors.count).to eq(1)
       end
 
-      it "should have the missing url warning" do
-        expect(block.warnings.first).to eq("No url given")
+      it "should have the missing url error" do
+        expect(block.errors.first).to eq("No url given")
       end
     end
 
@@ -161,8 +158,8 @@ describe Markdownplus::Parser do
         expect(block.warnings.count).to eq(1)
       end
 
-      it "should have the multi line warning" do
-        expect(block.warnings.first).to eq("More than one line given")
+      it "should have input ignored warning" do
+        expect(block.warnings.first).to eq("Include handler ignores input")
       end
     end
 
@@ -173,8 +170,16 @@ describe Markdownplus::Parser do
         expect(block.errors.count).to eq(1)
       end
 
-      it "should have the multi line warning" do
-        expect(block.errors.first).to eq("Error opening [this should just be an error] [No such file or directory - this should just be an error]")
+      it "should have the missing url error" do
+        expect(block.errors.first).to eq("No url given")
+      end
+
+      it "should have a warning" do
+        expect(block.warnings.count).to eq(1)
+      end
+
+      it "should have input ignored warning" do
+        expect(block.warnings.first).to eq("Include handler ignores input")
       end
     end
   end
