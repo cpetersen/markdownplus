@@ -4,11 +4,11 @@ grammar Transformation
   end
 
   rule expression
-    ( function / single_quote_string / double_quote_string / token / "" ) (',' expression)*  <Markdownplus::Literals::ExpressionLiteral>
+    ( function / single_quote_string / double_quote_string / symbol / "" ) (',' expression)*  <Markdownplus::Literals::ExpressionLiteral>
   end
 
   rule function
-    token parameters <Markdownplus::Literals::FunctionLiteral>
+    symbol parameters <Markdownplus::Literals::FunctionLiteral>
   end
 
   rule parameters
@@ -23,8 +23,8 @@ grammar Transformation
      space? '"' [a-zA-Z0-9 \t]+ '"' space? <Markdownplus::Literals::StringLiteral>
   end
 
-  rule token
-     space? [a-zA-Z0-9]+ space? <Markdownplus::Literals::TokenLiteral>
+  rule symbol
+     space? [a-zA-Z0-9]+ space? <Markdownplus::Literals::SymbolLiteral>
   end
 
   rule space

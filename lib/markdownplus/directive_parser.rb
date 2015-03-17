@@ -39,8 +39,8 @@ module Markdownplus
         end
         results
       end
-      def tokens
-        self.elements.select { |e| e.class==TokenLiteral }
+      def symbols
+        self.elements.select { |e| e.class==SymbolLiteral }
       end
       def parens
         self.elements.select { |e| e.class==ParensLiteral }
@@ -53,7 +53,7 @@ module Markdownplus
 
     class FunctionLiteral < ExpressionLiteral
       def function_name
-        self.tokens[0].text_value.strip
+        self.symbols[0].text_value.strip
       end
 
       def function_parameters
@@ -69,7 +69,7 @@ module Markdownplus
       def find_parameters(elements, params=[])
         return params unless elements
         elements.each do |element|
-          if [StringLiteral, TokenLiteral, FunctionLiteral].include?(element.class)
+          if [StringLiteral, SymbolLiteral, FunctionLiteral].include?(element.class)
             params << element 
           else
             find_parameters(element.elements, params)
@@ -86,7 +86,7 @@ module Markdownplus
       end
     end
 
-    class TokenLiteral < ExpressionLiteral
+    class SymbolLiteral < ExpressionLiteral
       def to_s
         self.text_value.strip
       end

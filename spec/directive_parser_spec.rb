@@ -65,7 +65,7 @@ describe Markdownplus::DirectiveParser do
     end
 
     it "the first parameter should be correct" do
-      expect(value.functions.first.function_parameters[0].class).to eq(Markdownplus::Literals::TokenLiteral)
+      expect(value.functions.first.function_parameters[0].class).to eq(Markdownplus::Literals::SymbolLiteral)
       expect(value.functions.first.function_parameters[0].to_s).to eq("test")
     end
 
@@ -75,7 +75,7 @@ describe Markdownplus::DirectiveParser do
     end
 
     it "the third parameter should be correct" do
-      expect(value.functions.first.function_parameters[2].class).to eq(Markdownplus::Literals::TokenLiteral)
+      expect(value.functions.first.function_parameters[2].class).to eq(Markdownplus::Literals::SymbolLiteral)
       expect(value.functions.first.function_parameters[2].to_s).to eq("nil")
     end
   end
