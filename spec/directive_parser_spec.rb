@@ -88,7 +88,6 @@ describe Markdownplus::DirectiveParser do
     end
 
     it "should have 2 functions" do
-      pending "lists of functions don't work yet"
       expect(value.functions.count).to eq(2)
     end
 
@@ -108,12 +107,10 @@ describe Markdownplus::DirectiveParser do
       let(:function) { value.functions[1] }
 
       it "should be 'include'" do
-        pending "lists of functions don't work yet"
         expect(function.function_name).to eq("execute")
       end
 
       it "should have no parameters" do
-        pending "lists of functions don't work yet"
         expect(function.function_parameters.count).to eq(0)
       end
     end

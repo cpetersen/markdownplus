@@ -26,7 +26,18 @@ module Markdownplus
   module Literals
     class ExpressionLiteral < Treetop::Runtime::SyntaxNode
       def functions
-        self.elements.select { |e| e.class==FunctionLiteral }
+        _functions(self.elements).flatten.compact
+      end
+
+      def _functions(elements)
+        return unless elements
+        results = elements.select { |e| e.class==Markdownplus::Literals::FunctionLiteral }
+        elements.each do |element|
+          if [Treetop::Runtime::SyntaxNode, Markdownplus::Literals::ExpressionLiteral, Markdownplus::Literals::TransformationLiteral].include?(element.class)
+            results << _functions(element.elements)
+          end
+        end
+        results
       end
       def tokens
         self.elements.select { |e| e.class==TokenLiteral }
