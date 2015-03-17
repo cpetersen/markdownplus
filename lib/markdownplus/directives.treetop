@@ -16,11 +16,11 @@ grammar Transformation
   end
 
   rule single_quote_string
-     space? "'" [a-zA-Z0-9 \t]+ "'" space? <Markdownplus::Literals::StringLiteral>
+     space? "'" [a-zA-Z0-9 \t:\/\.]+ "'" space? <Markdownplus::Literals::StringLiteral>
   end
 
   rule double_quote_string
-     space? '"' [a-zA-Z0-9 \t]+ '"' space? <Markdownplus::Literals::StringLiteral>
+     space? '"' [a-zA-Z0-9 \t:\/\.]+ '"' space? <Markdownplus::Literals::StringLiteral>
   end
 
   rule symbol

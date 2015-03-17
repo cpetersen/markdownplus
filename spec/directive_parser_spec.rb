@@ -147,4 +147,28 @@ describe Markdownplus::DirectiveParser do
       end
     end
   end
+
+  context "a function with a url parameter" do
+    let(:value) { Markdownplus::DirectiveParser.parse("include('http://www.google.com')") }
+
+    it "should have a single function" do
+      expect(value.functions.count).to eq(1)
+    end
+
+    it "should have a function named 'include'" do
+      expect(value.functions.first.function_name).to eq("include")
+    end
+
+    it "should have 1 parameter" do
+      expect(value.functions.first.function_parameters.count).to eq(1)
+    end
+
+    context "the first parameter" do
+      let(:param) { value.functions.first.function_parameters.first }
+
+      it "should be google.com" do
+        expect(param.to_s).to eq("http://www.google.com")
+      end
+    end
+  end
 end
