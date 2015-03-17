@@ -1,6 +1,6 @@
 require "markdownplus/version"
 require "markdownplus/parser"
-require "markdownplus/method_parser"
+require "markdownplus/directive_parser"
 
 module Markdownplus
   # Your code goes here...

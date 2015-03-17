@@ -1,9 +1,9 @@
 require 'treetop'
 
 module Markdownplus
-  class MethodParser
+  class DirectiveParser
     def self.parse(data)
-      Treetop.load("lib/markdownplus/transformations")
+      Treetop.load("lib/markdownplus/directives")
       @@parser ||= TransformationParser.new
       tree = @@parser.parse(data)
       # If the AST is nil then there was an error during parsing
@@ -25,8 +25,8 @@ module Markdownplus
 
   module Literals
     class ExpressionLiteral < Treetop::Runtime::SyntaxNode
-      def methods
-        self.elements.select { |e| e.class==MethodLiteral }
+      def functions
+        self.elements.select { |e| e.class==FunctionLiteral }
       end
       def tokens
         self.elements.select { |e| e.class==TokenLiteral }
@@ -40,25 +40,25 @@ module Markdownplus
       #Specific subclass, the root should only match this
     end
 
-    class MethodLiteral < ExpressionLiteral
-      def method_name
+    class FunctionLiteral < ExpressionLiteral
+      def function_name
         self.tokens[0].text_value.strip
       end
 
-      def method_parameters
-        self.parens.first.method_parameters
+      def function_parameters
+        self.parens.first.function_parameters
       end
     end
 
     class ParensLiteral < ExpressionLiteral
-      def method_parameters
+      def function_parameters
         self.find_parameters(self.elements)
       end
 
       def find_parameters(elements, params=[])
         return params unless elements
         elements.each do |element|
-          if [StringLiteral, TokenLiteral, MethodLiteral].include?(element.class)
+          if [StringLiteral, TokenLiteral, FunctionLiteral].include?(element.class)
             params << element 
           else
             find_parameters(element.elements, params)

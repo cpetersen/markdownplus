@@ -1,14 +1,14 @@
 grammar Transformation
   rule transformations
-    ( method / "" ) (',' method)*  <Markdownplus::Literals::TransformationLiteral>
+    ( function / "" ) (',' function)*  <Markdownplus::Literals::TransformationLiteral>
   end
 
   rule expression
-    ( method / single_quote_string / double_quote_string / token / "" ) (',' expression)*  <Markdownplus::Literals::ExpressionLiteral>
+    ( function / single_quote_string / double_quote_string / token / "" ) (',' expression)*  <Markdownplus::Literals::ExpressionLiteral>
   end
 
-  rule method
-    token parameters <Markdownplus::Literals::MethodLiteral>
+  rule function
+    token parameters <Markdownplus::Literals::FunctionLiteral>
   end
 
   rule parameters
