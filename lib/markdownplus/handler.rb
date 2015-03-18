@@ -51,6 +51,7 @@ module Markdownplus
         output = input
         errors << "Invalid json"
       end
+      "```json\n#{output}\n```"
     end
   end
   HandlerRegistry.register("formatted_json", FormattedJsonHandler)

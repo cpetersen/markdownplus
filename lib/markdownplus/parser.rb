@@ -32,16 +32,20 @@ module Markdownplus
       code_blocks.select(&:executable?)
     end
 
-    def markdown
-      blocks.collect { |b| b.markdown }.join
+    def input_markdown
+      blocks.collect { |b| b.input_markdown }.join
+    end
+
+    def output_markdown
+      blocks.collect { |b| b.output_markdown }.join
     end
 
     def html
-      markdown_renderer.render(markdown)
+      markdown_renderer.render(output_markdown)
     end
 
     def markdown_renderer
-      Redcarpet::Markdown.new(BootstrapRenderer, fenced_code_blocks: true)
+      Redcarpet::Markdown.new(GithubRenderer, fenced_code_blocks: true)
     end
 
     def lines
@@ -116,7 +120,11 @@ module Markdownplus
   end
 
   class TextBlock < Block
-    def markdown
+    def input_markdown
+      self.input
+    end
+
+    def output_markdown
       self.input
     end
   end
@@ -160,13 +168,17 @@ module Markdownplus
       self.output
     end
 
-    def markdown
+    def input_markdown
       s = input
       if s.end_with?("\n")
         result = "```#{directive}\n#{input}```\n"
       else
         result = "```#{directive}\n#{input}\n```\n"
       end
+    end
+
+    def output_markdown
+      self.output
     end
 
     def output_lines

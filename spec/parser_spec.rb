@@ -28,11 +28,11 @@ describe Markdownplus::Parser do
         expect(parser.executable_blocks.count).to eq(2)
       end
 
-      context "the markdown method" do
-        let(:markdown) { parser.markdown }
+      context "input_markdown input_markdown method" do
+        let(:input_markdown) { parser.input_markdown }
 
         it "should match the contents of the original file" do
-          expect(markdown).to eq(file)
+          expect(input_markdown).to eq(file)
         end
       end
 
@@ -136,6 +136,15 @@ describe Markdownplus::Parser do
 
       it "should include the proper number of output lines" do
         expect(block.output_lines.count).to eq(21)
+      end
+    end
+
+    context "the html" do
+      let(:generated_html) { parser.html }
+      let(:static_html) { File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "directives.html")) }
+
+      it "should match" do
+        expect(generated_html).to eq(static_html)
       end
     end
 
