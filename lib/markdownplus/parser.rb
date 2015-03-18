@@ -1,8 +1,6 @@
 require 'csv'
 require 'json'
 require 'open-uri'
-require 'pygments'
-require 'redcarpet'
 
 module Markdownplus
   class Parser
