@@ -69,18 +69,20 @@ module Markdownplus
     end
 
     def parse
+      block_number = 0
       each_line do |line|
         matcher = line.match(/\s*`{3,}\s*(\S*)\s*/)
         if matcher
           if self.current_block && self.current_block.is_a?(CodeBlock)
             self.blocks << self.current_block
             self.current_block = nil
+            block_number += 1
           else
             self.blocks << self.current_block if self.current_block
-            self.current_block = CodeBlock.new(matcher[1])
+            self.current_block = CodeBlock.new(block_number, matcher[1])
           end
         else
-          self.current_block ||= TextBlock.new
+          self.current_block ||= TextBlock.new(block_number)
           self.current_block.append line
         end
       end
@@ -95,6 +97,11 @@ module Markdownplus
   end
 
   class Block
+    attr_reader :block_number
+    def initialize(block_number)
+      @block_number = block_number
+    end
+
     def input
       @input ||= ""
     end
@@ -120,6 +127,7 @@ module Markdownplus
   end
 
   class TextBlock < Block
+
     def input_markdown
       self.input
     end
@@ -133,7 +141,8 @@ module Markdownplus
     attr_reader :directive, :program
     attr_accessor :output
 
-    def initialize(value=nil)
+    def initialize(block_number, value=nil)
+      @block_number = block_number
       @directive = value
 
       if @directive.match(/\(/)
@@ -157,12 +166,7 @@ module Markdownplus
       self.output = self.input
       if functions
         self.functions.each do |function|
-          handler = HandlerRegistry.handler_instance(function.function_name)
-          if handler
-            self.output = handler.execute(output, function.function_parameters, warnings, errors)
-          else
-            self.errors << "No handler defined for [#{function.function_name}]"
-          end
+          self.output = function.execute(self.output, self.warnings, self.errors)
         end
       end
       self.output

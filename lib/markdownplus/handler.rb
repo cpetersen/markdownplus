@@ -1,6 +1,6 @@
 module Markdownplus
   class Handler
-    def execute(input, parameters, warnings, errors)
+    def execute(input, parameters)
     end
   end
 
