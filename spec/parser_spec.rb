@@ -114,7 +114,11 @@ describe Markdownplus::Parser do
   end
 
   context "directives" do
-    let(:parser) { 
+    let(:parser) {
+      allow(Markdownplus::IncludeHandler).to receive(:cached).with("https://gist.githubusercontent.com/cpetersen/b5a473ddf0b796cd9502/raw/e140bdc32ff2f6a600e357c2575220c0312a88ee/fake.csv").and_return( File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "fake.csv")) )
+      allow(Markdownplus::IncludeHandler).to receive(:cached).with("https://gist.githubusercontent.com/cpetersen/c6571117df132443ac81/raw/e5ac97e8e0665a0e4014ebc85ecef214763a7729/fake.json").and_return( File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "fake.json")) )
+      allow(Markdownplus::IncludeHandler).to receive(:cached).with("https://gist.githubusercontent.com/cpetersen/4ac0ab5fb4d1fda22322/raw/3856ed58d5cdfd07800067fc9fb8fcbcfc631d65/bad_json.json").and_return( File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "bad_json.json")) )
+
       parser = Markdownplus::Parser.parse(File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "directives.mdp")))
       parser.execute
       parser
