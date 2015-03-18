@@ -127,8 +127,8 @@ describe Markdownplus::Parser do
       expect(parser.warnings.count).to eq(2)
     end
 
-    it "should have 4 errors" do
-      expect(parser.errors.count).to eq(4)
+    it "should have 3 errors" do
+      expect(parser.errors.count).to eq(3)
     end
 
     context "the second block" do
@@ -160,6 +160,18 @@ describe Markdownplus::Parser do
 
       it "should have input ignored warning" do
         expect(block.warnings.first).to eq("Include handler ignores input")
+      end
+    end
+
+    context "the twelfth block" do
+      let(:block) { parser.blocks[11] }
+
+      it "should have 1 error" do
+        expect(block.errors.count).to eq(1)
+      end
+
+      it "should have invalid json" do
+        expect(block.errors.first).to eq("Invalid json")
       end
     end
 

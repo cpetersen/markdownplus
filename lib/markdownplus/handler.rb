@@ -41,4 +41,17 @@ module Markdownplus
     end
   end
   HandlerRegistry.register("csv", CsvHandler)
+
+  class FormattedJsonHandler < Handler
+    def execute(input, parameters, warnings, errors)
+      begin
+        obj = JSON.parse(input)
+        output = JSON.pretty_generate(obj)
+      rescue => e
+        output = input
+        errors << "Invalid json"
+      end
+    end
+  end
+  HandlerRegistry.register("formatted_json", FormattedJsonHandler)
 end

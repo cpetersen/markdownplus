@@ -171,4 +171,36 @@ describe Markdownplus::DirectiveParser do
       end
     end
   end
+
+  context "a function with parameters that contain strange characters" do
+    let(:value) { Markdownplus::DirectiveParser.parse("include('this-is_a test', so_is-this)") }
+
+    it "should have a single function" do
+      expect(value.functions.count).to eq(1)
+    end
+
+    it "should have a function named 'include'" do
+      expect(value.functions.first.function_name).to eq("include")
+    end
+
+    it "should have 2 parameters" do
+      expect(value.functions.first.function_parameters.count).to eq(2)
+    end
+
+    context "the first parameter" do
+      let(:param) { value.functions.first.function_parameters[0] }
+
+      it "should be correct" do
+        expect(param.to_s).to eq("this-is_a test")
+      end
+    end
+
+    context "the second parameter" do
+      let(:param) { value.functions.first.function_parameters[1] }
+
+      it "should be correct" do
+        expect(param.to_s).to eq("so_is-this")
+      end
+    end
+  end
 end
