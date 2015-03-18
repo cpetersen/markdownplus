@@ -113,9 +113,9 @@ describe Markdownplus::Parser do
     end
   end
 
-  context "execute directives" do
+  context "directives" do
     let(:parser) { 
-      parser = Markdownplus::Parser.parse(File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "include.mdp")))
+      parser = Markdownplus::Parser.parse(File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "directives.mdp")))
       parser.execute
       parser
     }
