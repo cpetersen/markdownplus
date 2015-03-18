@@ -14,7 +14,7 @@ module Markdownplus
         errors << "No url given"
       else
         begin
-          output = cached(parameters.first.to_s)
+          output = IncludeHandler.cached(parameters.first.to_s)
         rescue => e
           errors << "Error opening [#{parameters.first}] [#{e.message}]"
         end
@@ -23,7 +23,7 @@ module Markdownplus
     end
 
     @@cache = {}
-    def cached(url)
+    def self.cached(url)
       return @@cache[url] if @@cache[url]
       @@cache[url] = open(url).read
       @@cache[url]
