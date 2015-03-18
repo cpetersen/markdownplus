@@ -1,0 +1,33 @@
+grammar Transformation
+  rule transformations
+    ( function / "" ) (',' function)*  <Markdownplus::Literals::TransformationLiteral>
+  end
+
+  rule expression
+    ( function / single_quote_string / double_quote_string / symbol / "" ) (',' expression)*  <Markdownplus::Literals::ExpressionLiteral>
+  end
+
+  rule function
+    symbol parameters <Markdownplus::Literals::FunctionLiteral>
+  end
+
+  rule parameters
+    "(" expression ")" <Markdownplus::Literals::ParensLiteral>
+  end
+
+  rule single_quote_string
+     space? "'" [a-zA-Z0-9\-_ \t:\/\.]+ "'" space? <Markdownplus::Literals::StringLiteral>
+  end
+
+  rule double_quote_string
+     space? '"' [a-zA-Z0-9\-_ \t:\/\.]+ '"' space? <Markdownplus::Literals::StringLiteral>
+  end
+
+  rule symbol
+     space? [a-zA-Z0-9\-_]+ space? <Markdownplus::Literals::SymbolLiteral>
+  end
+
+  rule space
+    [\s]+
+  end
+end
