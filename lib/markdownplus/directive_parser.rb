@@ -3,7 +3,7 @@ require 'treetop'
 module Markdownplus
   class DirectiveParser
     def self.parse(data)
-      Treetop.load("lib/markdownplus/directives")
+      Treetop.load(File.expand_path("../directives", __FILE__))
       @@parser ||= TransformationParser.new
       tree = @@parser.parse(data)
       # If the AST is nil then there was an error during parsing
