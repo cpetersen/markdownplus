@@ -47,7 +47,7 @@ module Markdownplus
         if handler
           output = handler.execute(input, self.function_parameter_values(nil, warnings, errors), warnings, errors)
         else
-          self.add_error("No handler defined for [#{self.function_name}]")
+          errors << "No handler defined for [#{self.function_name}]"
         end
         output
       end

@@ -31,7 +31,7 @@ module Markdownplus
   end
   HandlerRegistry.register("include", IncludeHandler)
 
-  class CsvHandler < Handler
+  class Csv2HtmlHandler < Handler
     def execute(input, parameters, warnings, errors)
       output = "<table class='table table-striped'>"
       row_num = 0
@@ -47,9 +47,9 @@ module Markdownplus
       output
     end
   end
-  HandlerRegistry.register("csv", CsvHandler)
+  HandlerRegistry.register("csv2html", Csv2HtmlHandler)
 
-  class FormattedJsonHandler < Handler
+  class PrettyJsonHandler < Handler
     def execute(input, parameters, warnings, errors)
       begin
         obj = JSON.parse(input)
@@ -61,5 +61,5 @@ module Markdownplus
       "```json\n#{output}\n```"
     end
   end
-  HandlerRegistry.register("formatted_json", FormattedJsonHandler)
+  HandlerRegistry.register("pretty_json", PrettyJsonHandler)
 end
