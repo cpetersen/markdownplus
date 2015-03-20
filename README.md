@@ -79,12 +79,13 @@ The first function in the pipeline gets the contents of the fenced code block as
 
 would get `{"a":1,"b":2,"c":3}` as the input variable and produce the following:
 
-<div class="highlight"><pre><span class="p">{</span>
-  <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-  <span class="nt">&quot;c&quot;</span><span class="p">:</span> <span class="mi">3</span>
-<span class="p">}</span>
-</pre></div>
+```json
+{
+  "a": 1,
+  "b": 2,
+  "c": 3
+}
+```
 
 ### Pipeline
 
