@@ -113,17 +113,25 @@ The output of the last function in the pipeline is used as the content when gene
 
 `pretty_json` takes no parameters, but expects valid JSON as input. It formats the JSON nicely using Ruby's `JSON.pretty_generate` and outputs a fenced code block with the language specified as `json`.
 
-### register()
+### set('variable_name')
 
-Coming soon. Will register a variable.
+Stores the input in a `variable_name` for use later in the page.
 
-### variable()
+### get('variable_name')
 
-Coming soon. Will produce contents of a variable.
+Outputs the content stored at a the `variable_name`.
 
-### hidden()
+### empty()
 
-Coming soon. Will simply hide the given input.
+Hides the output. Often used with `set()`
+
+### raw()
+
+Output the content as raw html and skip any markdown formatting that may apply.
+
+### strip_whitespace()
+
+Strips any leading or trailing whitespace from the `input` and outputs the result.
 
 ## Extendable
 
