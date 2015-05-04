@@ -52,12 +52,16 @@ module Markdownplus
       @lines ||= input.split("\n")
     end
 
-    def errors
-      blocks.collect { |b| b.errors }.flatten
+    def variables
+      @variables ||= {}
     end
 
     def warnings
       blocks.collect { |b| b.warnings }.flatten
+    end
+
+    def errors
+      blocks.collect { |b| b.errors }.flatten
     end
 
     def each_line(&block)
@@ -91,7 +95,7 @@ module Markdownplus
 
     def execute
       self.executable_blocks.each do |block|
-        block.execute
+        block.execute(self.variables)
       end
     end
   end
@@ -162,11 +166,11 @@ module Markdownplus
       (functions!=nil && functions.size>0)
     end
 
-    def execute
+    def execute(variables)
       self.output = self.input
       if functions
         self.functions.each do |function|
-          self.output = function.execute(self.output, self.warnings, self.errors)
+          self.output = function.execute(self.output, variables, self.warnings, self.errors)
         end
       end
       self.output

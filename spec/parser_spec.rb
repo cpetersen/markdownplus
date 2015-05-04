@@ -208,4 +208,51 @@ describe Markdownplus::Parser do
       end
     end
   end
+
+
+  context "variables" do
+    let(:parser) {
+      allow(Markdownplus::IncludeHandler).to receive(:cached).with("https://gist.githubusercontent.com/cpetersen/b5a473ddf0b796cd9502/raw/e140bdc32ff2f6a600e357c2575220c0312a88ee/fake.csv").and_return( File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "fake.csv")) )
+
+      parser = Markdownplus::Parser.parse(File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "variables.mdp")))
+      parser.execute
+      parser
+    }
+    it "should have the right number of blocks" do
+      expect(parser.blocks.count).to eq(8)
+    end
+
+    it "shouldn't have any warnings" do
+      expect(parser.warnings).to be_empty
+    end
+
+    it "shouldn't have any errors" do
+      expect(parser.errors).to be_empty
+    end
+
+    context "the fourth block" do
+      let(:block) { parser.blocks[3] }
+
+      it "should be empty" do
+        expect(block.output_lines.count).to eq(0)
+      end
+    end
+
+    context "the seventh block" do
+      let(:block) { parser.blocks[7] }
+
+      it "should include the proper number of output lines" do
+        expect(block.output_lines.count).to eq(23)
+      end
+    end
+
+    context "the html" do
+      let(:generated_html) { parser.html }
+      let(:static_html) { File.read(File.join(File.dirname(__FILE__), "..", "spec", "fixtures", "variables.html")) }
+
+      it "should match" do
+        expect(generated_html).to eq(static_html)
+      end
+    end
+  end
 end

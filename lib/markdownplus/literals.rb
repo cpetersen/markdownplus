@@ -38,22 +38,22 @@ module Markdownplus
         self.parens.first.function_parameters
       end
 
-      def function_parameter_values(input, warnings, errors)
-        self.parens.first.function_parameters.collect { |fp| fp.value(input, warnings, errors) }
+      def function_parameter_values(input, variables, warnings, errors)
+        self.parens.first.function_parameters.collect { |fp| fp.value(input, variables, warnings, errors) }
       end
 
-      def execute(input, warnings, errors)
+      def execute(input, variables, warnings, errors)
         handler = HandlerRegistry.handler_instance(self.function_name)
         if handler
-          output = handler.execute(input, self.function_parameter_values(nil, warnings, errors), warnings, errors)
+          output = handler.execute(input, self.function_parameter_values(nil, variables, warnings, errors), variables, warnings, errors)
         else
           errors << "No handler defined for [#{self.function_name}]"
         end
         output
       end
 
-      def value(input, warnings, errors)
-        execute(input, warnings, errors)
+      def value(input, variables, warnings, errors)
+        execute(input, variables, warnings, errors)
       end
 
     end
@@ -82,7 +82,7 @@ module Markdownplus
         v[1..v.length-2]
       end
 
-      def value(input, warnings, errors)
+      def value(input, variables, warnings, errors)
         to_s
       end
     end
@@ -92,7 +92,7 @@ module Markdownplus
         self.text_value.strip
       end
 
-      def value(input, warnings, errors)
+      def value(input, variables, warnings, errors)
         to_s
       end
     end
