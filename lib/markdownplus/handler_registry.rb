@@ -13,5 +13,9 @@ module Markdownplus
     def self.register(name, handler)
       @@registry[name] = handler
     end
+
+    def self.available_handlers
+      @@registry.keys
+    end
   end
 end
