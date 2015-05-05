@@ -206,7 +206,7 @@ describe Markdownplus::DirectiveParser do
 
   context "some specific cases" do
     context "value 1" do
-      let(:value) { Markdownplus::DirectiveParser.parse("julia(dataFrame('my_variable', get('my_variable'))),strip_whitespace(),raw()") }
+      let(:value) { Markdownplus::DirectiveParser.parse("julia(data_frame('my_variable', get('my_variable'))),strip_whitespace(),raw()") }
   
       it "should parse" do
         expect(value.class).to eq(Markdownplus::Literals::TransformationLiteral)
@@ -231,8 +231,8 @@ describe Markdownplus::DirectiveParser do
           expect(param.class).to eq(Markdownplus::Literals::FunctionLiteral)
         end
 
-        it "should be a function named 'dataFrame'" do
-          expect(param.function_name).to eq("dataFrame")
+        it "should be a function named 'data_frame'" do
+          expect(param.function_name).to eq("data_frame")
         end
 
         it "should have 2 parameters" do
