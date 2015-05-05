@@ -135,6 +135,12 @@ Strips any leading or trailing whitespace from the `input` and outputs the resul
 
 ## Extendable
 
+Current plugins include:
+
+ * [markdownplus-sql](https://github.com/cpetersen/markdownplus-sql) - Plugin for querying a sql database directly from markdown.
+ * [markdownplus-webshots](https://github.com/cpetersen/markdownplus-webshots) - Plugin for adding dynamically updatable browser shots to markdown.
+ * [markdownplus-julia](https://github.com/cpetersen/markdownplus-julia) - Plugin for doing statistical analysis and charting in markdown using julia.
+
 
 
 ## Installation
