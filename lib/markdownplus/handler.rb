@@ -33,18 +33,23 @@ module Markdownplus
 
   class Csv2HtmlHandler < Handler
     def execute(input, parameters, variables, warnings, errors)
-      output = "<table class='table table-striped'>"
-      row_num = 0
-      CSV.parse(input) do |row|
-        if row_num == 0
-          output += "<thead><tr>#{row.collect { |c| "<th>#{c}</th>"}.join}</tr></thead>\n<tbody>\n"
-        else
-          output += "<tr>#{row.collect { |c| "<td>#{c}</td>"}.join}</tr>\n"
+      if input
+        output = "<table class='table table-striped'>"
+        row_num = 0
+        CSV.parse(input) do |row|
+          if row_num == 0
+            output += "<thead><tr>#{row.collect { |c| "<th>#{c}</th>"}.join}</tr></thead>\n<tbody>\n"
+          else
+            output += "<tr>#{row.collect { |c| "<td>#{c}</td>"}.join}</tr>\n"
+          end
+          row_num += 1
         end
-        row_num += 1
+        output += "</tbody></table>"
+        output
+      else
+        errors << "No input given"
+        ""
       end
-      output += "</tbody></table>"
-      output
     end
   end
   HandlerRegistry.register("csv2html", Csv2HtmlHandler)
