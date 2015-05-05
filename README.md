@@ -109,6 +109,10 @@ The output of the last function in the pipeline is used as the content when gene
 
 `csv2html` takes no parameters, but expects valid CSV as input. It creates an HTML table from the given CSV.
 
+### drop_columns(1,2,3)
+
+`drop_columns` takes any number of integer parameters. It will remove the specified columns from any CSV data and pass the remaining columns along as output.
+
 ### pretty_json()
 
 `pretty_json` takes no parameters, but expects valid JSON as input. It formats the JSON nicely using Ruby's `JSON.pretty_generate` and outputs a fenced code block with the language specified as `json`.
