@@ -203,4 +203,73 @@ describe Markdownplus::DirectiveParser do
       end
     end
   end
+
+  context "some specific cases" do
+    context "value 1" do
+      let(:value) { Markdownplus::DirectiveParser.parse("julia(dataFrame('my_variable', get('my_variable'))),strip_whitespace(),raw()") }
+  
+      it "should parse" do
+        expect(value.class).to eq(Markdownplus::Literals::TransformationLiteral)
+      end
+
+      it "should have a three functions" do
+        expect(value.functions.count).to eq(3)
+      end
+
+      it "should have a function named 'julia'" do
+        expect(value.functions.first.function_name).to eq("julia")
+      end
+
+      it "should have 1 parameter" do
+        expect(value.functions.first.function_parameters.count).to eq(1)
+      end
+
+      context "the function parameter" do
+        let(:param) { value.functions.first.function_parameters.first }
+
+        it "should be a functionLiteral" do
+          expect(param.class).to eq(Markdownplus::Literals::FunctionLiteral)
+        end
+
+        it "should be a function named 'dataFrame'" do
+          expect(param.function_name).to eq("dataFrame")
+        end
+
+        it "should have 2 parameters" do
+          expect(param.function_parameters.count).to eq(2)
+        end
+
+        context "the first parameter" do
+          let(:param1) { param.function_parameters.first }
+          it "should be a String" do
+            expect(param1.class).to eq(Markdownplus::Literals::StringLiteral)
+          end
+
+          it "should equal 'my_variable'" do
+            expect(param1.to_s).to eq("my_variable")
+          end
+        end
+
+        context "the second parameter" do
+          let(:param2) { param.function_parameters[1] }
+          it "should be a functionLiteral" do
+            expect(param2.class).to eq(Markdownplus::Literals::FunctionLiteral)
+          end
+          it "should be a function named 'get'" do
+            expect(param2.function_name).to eq("get")
+          end
+          it "should have a parameter 'my_variable'" do
+            expect(param2.function_parameters.first.to_s).to eq("my_variable")
+          end
+        end
+      end
+    end
+
+    context "value 2" do
+      let(:value) { Markdownplus::DirectiveParser.parse("sql('postgres://username1:password2@ec2-12-345-678-9.compute-1.amazonaws.com:1234/database'),set('my_variable'),empty()") }
+      it "should parse" do
+        expect(value.class).to eq(Markdownplus::Literals::TransformationLiteral)
+      end
+    end
+  end
 end
